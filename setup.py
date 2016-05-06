@@ -11,6 +11,6 @@ setup(
         'lxml',
     ],
     entry_points={
-        'console_scripts': 'exp_viewer=exp_viewer.app:main'
+        'console_scripts': 'expenses-viewer=exp_viewer.app:main'
     },
 )
