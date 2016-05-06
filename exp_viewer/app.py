@@ -1,3 +1,4 @@
+import os
 import sys
 import tempfile
 
@@ -8,10 +9,25 @@ from parser import parse
 import json
 
 app = flask.Flask(__name__)
-json_path = None
+json_file = None
+
+version = 0
 
 def load():
-    with open(json_path) as fobj:
+    global version
+    time = os.path.getmtime(sys.argv[1])
+    if time != version:
+        version = time
+
+        expenses = parse(sys.argv[1])
+        data = list(reversed([exp.to_json() for exp in expenses.expenses]))
+        json_file.seek(0)
+        json.dump(data, json_file)
+        json_file.flush()
+
+        return data
+
+    with open(json_file) as fobj:
         return json.load(fobj)
 
 @app.route('/')
@@ -24,15 +40,10 @@ def new():
 
 
 def main():
-    global json_path
-    path = sys.argv[1]
-    expenses = parse(path)
-    data = list(reversed([exp.to_json() for exp in expenses.expenses]))
+    global json_file
 
     with tempfile.NamedTemporaryFile() as fobj:
-        json_path = fobj.name
-        json.dump(data, fobj)
-        fobj.flush()
+        json_file = fobj
         app.run()
 
 if __name__ == '__main__':
