@@ -1,0 +1,174 @@
+{%extends "base.html" %}
+{% from "expense.macro.html" import expense_table %}
+
+{% block body %}
+<br>
+<nav class="navbar">
+  <div class="navbar-left">
+    <div class="navbar-item" style="width:100px">
+      <p class="subtitle is-5">
+        <strong>Search</strong>
+      </p>
+    </div>
+
+    <div class="navbar-item">
+      <p class="control has-icon has-icon-right">
+        <input id="type" class="input" type="text" placeholder="Type">
+        <i class="fa fa-question"></i>
+      </p>
+    </div>
+
+    <div class="navbar-item">
+      <p class="control has-icon has-icon-right">
+        <input id="gbp" class="input" type="text" placeholder="Amount">
+        <i class="fa fa-gbp"></i>
+      </p>
+    </div>
+
+    <div class="navbar-item">
+      <p class="control has-icon has-icon-right">
+        <input id="paidby" class="input" type="text" placeholder="Paid By">
+        <i class="fa fa-user"></i>
+      </p>
+    </div>
+
+    <div class="navbar-item">
+      <p class="control has-icon has-icon-right">
+        <input id="for" class="input" type="text" placeholder="For">
+        <i class="fa fa-users"></i>
+      </p>
+    </div>
+
+    <div class="navbar-item">
+      <p class="control has-icon has-icon-right">
+        <input id="description" class="input" type="text" placeholder="Text">
+        <i class="fa fa-search"></i>
+      </p>
+    </div>
+  </div>
+</nav>
+
+<nav class="navbar">
+  <div class="navbar-left">
+    <div class="navbar-item" style="width:100px">
+      <p class="subtitle">
+        <strong>Filter</strong>
+      </p>
+    </div>
+
+    <div class="navbar-item">
+      <p class="control">
+          <label class="checkbox">
+            <input id="fuzzy" type="checkbox">
+            FUZZY
+          </label>
+        </p>
+    </div>
+
+    <div class="navbar-item">
+      <p class="control">
+          <label class="checkbox">
+            <input id="notsubmitted" type="checkbox" checked>
+            NOT SUBMITTED
+          </label>
+        </p>
+    </div>
+
+    <div class="navbar-item">
+      <p class="control">
+          <label class="checkbox">
+            <input id="submitted" type="checkbox" checked>
+            SUBMITTED
+          </label>
+        </p>
+    </div>
+
+    <div class="navbar-item">
+      <p class="control">
+          <label class="checkbox">
+            <input id="reimbursed" type="checkbox" checked>
+            REIMBURSED
+          </label>
+        </p>
+    </div>
+
+    <div class="navbar-item">
+      <p class="control">
+          <label class="checkbox">
+            <input id="accounted" type="checkbox">
+            ACCOUNTED
+          </label>
+        </p>
+    </div>
+
+  </div>
+</nav>
+
+<!-- <nav class="navbar">
+  <div class="navbar-left">
+    <div class="navbar-item" style="width:100px">
+      <p class="subtitle">
+        <strong>Presets</strong>
+      </p>
+    </div>
+
+    <div class="navbar-item">
+      <p class="control">
+        <button class="button">Carl</button>
+      </p>
+    </div>
+    <div class="navbar-item">
+      <p class="control">
+        <button class="button">Edd</button>
+      </p>
+    </div>
+    <div class="navbar-item">
+      <p class="control">
+        <button class="button">Geoff</button>
+      </p>
+    </div>
+    <div class="navbar-item">
+      <p class="control">
+        <button class="button">Jasper</button>
+      </p>
+    </div>
+    <div class="navbar-item">
+      <p class="control">
+        <button class="button">Laurie</button>
+      </p>
+    </div>
+    <div class="navbar-item">
+      <p class="control">
+        <button class="button">Lukas</button>
+      </p>
+    </div>
+    <div class="navbar-item">
+      <p class="control">
+        <button class="button">Krish</button>
+      </p>
+    </div>
+    <div class="navbar-item">
+      <p class="control">
+        <button class="button">Sarah</button>
+      </p>
+    </div>
+  </div>
+
+  <div class="navbar-right">
+    <div class="navbar-item">
+      <p class="control">
+        <button class="button">Review</button>
+      </p>
+    </div>
+    <div class="navbar-item">
+      <p class="control">
+          <button class="button">Account</button>
+      </p>
+    </div>
+  </div>
+</nav> -->
+
+{% for expense in expenses %}
+{{ expense_table(loop.index, expense.description, expense.expenses, expense.sum, expense.status) }}
+{% endfor %}
+{% endblock %}

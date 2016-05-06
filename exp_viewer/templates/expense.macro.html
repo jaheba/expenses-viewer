@@ -1,0 +1,57 @@
+{% macro expense_table(id, description, exp_items, sum, status) -%}
+
+<div class="card is-fullwidth" id="card-{{id}}">
+  <header class="card-header">
+    <p class="card-header-title">
+      {{ description }}
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+        <table class="table expense-table">
+          <thead>
+            <tr>
+              <th class="status"></th>
+              <th class="type">Type</th>
+              <th class="date">Date</th>
+              <th class="paidby">Paid By</th>
+              <th class="for">For</th>
+              <th class="description">Description</th>
+              <!-- <th>Budget</th> -->
+              <th class="gbp">GBP</th>
+            </tr>
+          </thead>
+          <tbody>
+          {%- for item in exp_items -%}
+            <tr class="{{ item.status }}">
+              <td class="status">{{ item.status }}</td>
+              <td class="type">{{ item.type }}</td>
+              <td class="date">{{ item.date }}</td>
+              <td class="paidby">{{ item.paidby }}</td>
+              <td class="for">{{ item.for }}</td>
+              <td class="description">{{ item.description }}</td>
+              <!-- <td></td> -->
+              <td class="gbp">{{ item.gbp }}</td>
+            </tr>
+          {%- endfor -%}
+          </tbody>
+          <tfoot>
+              <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td class="gbp"><strong>{{ sum }}</strong></td>
+              </tr>
+          </tfoot>
+        </table>
+    </div>
+  </div>
+ {#  <footer class="card-footer not-submitted">
+    <span class="card-footer-item">{{ status }}</span>
+  </footer> #}
+</div>
+
+{%- endmacro %}

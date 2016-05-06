@@ -1,0 +1,60 @@
+{%extends "base.html" %}
+{% from "expense.macro.html" import expense_table %}
+
+{% block body %}
+<br>
+<label class="label">Description</label>
+<p class="control">
+  <input class="input" type="text" placeholder="Description">
+</p>
+
+<div class="control is-horizontal">
+  <div class="control is-grouped">
+  <span class="select">
+    <select>
+      <option>travel</option>
+      <option>accom</option>
+      <option>misc</option>
+      <option>food</option>
+      <option>equipment</option>
+    </select>
+  </span>
+
+    <p class="control has-icon has-icon-right">
+        <input class="input" type="date" placeholder="Date">
+        <i class="fa fa-gbp"></i>
+    </p>
+
+    <p class="control has-icon has-icon-right">
+        <input class="input" type="number" placeholder="GBP">
+        <i class="fa fa-gbp"></i>
+    </p>
+
+    <p class="control has-icon has-icon-right">
+        <input id="paidby" class="input" type="text" placeholder="Paid By">
+        <i class="fa fa-user"></i>
+    </p>
+
+    <p class="control has-icon has-icon-right">
+        <input id="for" class="input" type="text" placeholder="For">
+        <i class="fa fa-users"></i>
+    </p>
+
+    <p class="control has-icon has-icon-right">
+        <input id="for" class="input" type="text" placeholder="Description">
+        <i class="fa fa-users"></i>
+    </p>
+    <span class="select">
+    <select>
+      <option>cooler::travel</option>
+      <option>accom</option>
+      <option>misc</option>
+      <option>food</option>
+      <option>equipment</option>
+    </select>
+  </span>
+  </div>
+</div>
+
+
+{% endblock %}

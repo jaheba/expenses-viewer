@@ -1,0 +1,65 @@
+
+table.expense-table tr.N {
+    background-color: rgba(252, 228, 115, 0.2);
+}
+
+table.expense-table tr.S {
+    background-color: rgba(31, 200, 219, 0.2);
+}
+
+table.expense-table tr.R {
+    background-color: rgba(151, 205, 118, 0.2);
+}
+
+.card + .card {
+    margin-top: 30px;
+}
+.card-content {
+    padding: 10px 30px;
+}
+
+.card-header {
+    background-color: rgba(0,0,0, 0.05);
+}
+
+table {
+    table-layout: fixed;
+}
+
+th.status {
+    width: 1em;
+}
+
+th.type {
+    width: 5em;
+}
+
+th.date {
+    width: 8em;
+}
+
+th.paidby {
+    width: 12em;
+}
+
+th.for {
+    width: 40%;
+}
+
+th.description {
+    width: 60%;
+}
+
+th.gbp {
+    width: 5em;
+}
+
+.deselected {
+    opacity: 0.3;
+}
+
+#progress {
+    height: 2px;
+    background-color: red;
+    width: 0;
+}
