@@ -1,1 +1,2 @@
-recursive-include exp_viewer *
+recursive-include exp_viewer/templates *
+recursive-include exp_viewer/static *

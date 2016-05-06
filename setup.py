@@ -13,4 +13,6 @@ setup(
     entry_points={
         'console_scripts': 'expenses-viewer=exp_viewer.app:main'
     },
+    include_package_data = True,
+
 )
