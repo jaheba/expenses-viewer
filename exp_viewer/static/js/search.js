@@ -139,11 +139,49 @@ $(function (){
         if(!dry) {cards.show();}
     };
 
-    $("#type").bind("keyup", handler);
-    $("#paidby").bind("keyup", handler);
-    $("#for").bind("keyup", handler);
-    $("#description").bind("keyup", handler);
-    $("#gbp").bind("change", gbp_handler);
+    if($("#submit-flag").data("flag")) {
+        $("#notsubmitted").prop("checked", true).parent().hide();
+        $("#submitted").prop("checked", false).parent().hide();
+        $("#reimbursed").prop("checked", false).parent().hide();
+        $("#accounted").prop("checked", false).parent().hide();
+
+        // $("tr.N td.type").html('<strong><a href="#">ACCEPT</a></strong>');
+        $("tr.N").addClass("ready");
+        $("table").on("click", "tr.N", function(e){
+            $(this).removeClass("N").addClass("S").addClass("dirty");
+            return false;
+        });
+
+        $("#save-btn").show().click(function(){
+            $(this).addClass("is-loading");
+            let submitted = _.map($(".dirty"), function(self){
+                let $self = $(self);
+                return [$self.closest(".card").data('index'), $self.data('index')];
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/submit",
+                data: JSON.stringify(submitted),
+                contentType: "application/json; charset=utf-8",
+                // dataType: "json"
+            }).done(function(data){
+                window.location.reload()
+
+                $("#save-btn").removeClass("is-loading");
+            });
+        })
+
+        $(document).on("click", ".dirty", function(e){
+            $(this).removeClass("S").addClass("N").removeClass("dirty");
+        });
+    }
+
+    $("#type").on("keyup", handler);
+    $("#paidby").on("keyup", handler);
+    $("#for").on("keyup", handler);
+    $("#description").on("keyup", handler);
+    $("#gbp").on("change", gbp_handler);
 
     $("#notsubmitted").change(cb_handler);
     $("#submitted").change(cb_handler);
@@ -154,5 +192,6 @@ $(function (){
 
     window.reset = reset;
     reset();
+    $("#expenses").show();
 });
 

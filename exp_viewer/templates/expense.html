@@ -100,7 +100,10 @@
           </label>
         </p>
     </div>
+  </div>
 
+  <div class="navbar-right">
+    <p class="navbar-item"><a id="save-btn" class="button is-primary">Save</a></p>
   </div>
 </nav>
 
@@ -168,7 +171,11 @@
   </div>
 </nav> -->
 
+<div id="submit-flag" data-flag={{submit}}></div>
+
+<div id="expenses" style="display:none">
 {% for expense in expenses %}
-{{ expense_table(loop.index, expense.description, expense.expenses, expense.sum, expense.status) }}
+{{ expense_table(loop.index, expense.idx, expense.description, expense.expenses, expense.sum, expense.status) }}
 {% endfor %}
 {% endblock %}
+</div>

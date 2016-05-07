@@ -1,6 +1,6 @@
 
 table.expense-table tr.N {
-    background-color: rgba(252, 228, 115, 0.2);
+    background-color: rgba(252, 228, 115, 0.3);
 }
 
 table.expense-table tr.S {
@@ -62,4 +62,20 @@ th.gbp {
     height: 2px;
     background-color: red;
     width: 0;
+}
+
+.dirty td {
+    font-style: italic;
+    font-weight: bold;
+}
+
+tr.ready {
+    cursor: pointer;
+}
+.ready td {
+
+}
+
+#save-btn {
+    display: none;
 }

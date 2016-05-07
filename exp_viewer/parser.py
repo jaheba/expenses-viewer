@@ -1,7 +1,8 @@
-
+import re
 import sys
 import datetime
 from decimal import Decimal
+from StringIO import StringIO
 # import exp_db as db
 
 from lxml import etree
@@ -39,12 +40,6 @@ paiby_other = set(['other', 'purchaseorder'])
 
 
 class Budget(object):
-    table = 'budget'
-    fields = 'name descr initial balance_on_file balance active'.split()
-
-    def __sql_value__(self):
-        return self.name
-
     @classmethod
     def from_node(cls, node):
         return cls(
@@ -95,19 +90,17 @@ class Expense(object):
     def has_unaccounted(self):
         return any(exp.status != 'accounted' for exp in self.expenses)
 
-    def to_json(self):
+    def to_json(self, index):
         return {
             "description": self.text,
-            "expenses": [exp.to_json() for exp in self.expenses],
+            "expenses": [exp.to_json(i) for i, exp in enumerate(self.expenses)],
             "sum": '%.2f' %self.sum(),
-            "status": 'TODO'
+            "status": 'TODO',
+            "idx": index
         }
 
 
 class ExpenseItem(object):
-    table = 'item'
-    fields = 'type text for_ date gbp paidby budget status'.split()
-
     @classmethod
     def from_node(cls, node, env):
         budgetid = node.get('budgetid')
@@ -145,7 +138,7 @@ class ExpenseItem(object):
 
         return cls(node.tag, text, for_, date, gbp, paidby, budget, status)
 
-    def to_json(self):
+    def to_json(self, index):
         return {
             "status": self.status[0].upper(),
             "type": self.type.upper()[:6],
@@ -153,7 +146,8 @@ class ExpenseItem(object):
             "date": self.date,
             "paidby": self.paidby,
             "for": self.for_,
-            "description": self.text
+            "description": self.text,
+            "idx": index
         }
 
     def __init__(self, type, text, for_, date, gbp, paidby, budget, status):
@@ -238,6 +232,30 @@ def parse(path):
         tree = etree.parse(xml_file, parser=parser)
         exp = analyse(tree)
         return exp
+
+
+preamble_re = re.compile(r'^(.+)(?=<expenses>)', flags=re.MULTILINE+re.S)
+
+def fix_preamble(xml, preamble):
+    return preamble_re.sub(preamble, xml, 1)
+
+def get_preamble(text):
+    return preamble_re.search(text).group(0)
+
+def set_submitted(path, changes):
+    with open(path) as xml_file:
+        xml = xml_file.read()
+        parser = etree.XMLParser(remove_comments=False)
+        tree = etree.parse(StringIO(xml), parser=parser)
+
+    expenses = tree.xpath('expense')
+
+    for exp, item in changes:
+        expenses[exp][item+1].set('status', 'submitted')
+
+    new = etree.tostring(tree)
+    with open(path, 'w') as xml_file:
+        xml_file.write(fix_preamble(new, get_preamble(xml)))
 
 def main(path):
     try:

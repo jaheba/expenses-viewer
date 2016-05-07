@@ -1,6 +1,6 @@
-{% macro expense_table(id, description, exp_items, sum, status) -%}
+{% macro expense_table(id, idx, description, exp_items, sum, status) -%}
 
-<div class="card is-fullwidth" id="card-{{id}}">
+<div class="card is-fullwidth" id="card-{{id}}" data-index="{{ idx }}">
   <header class="card-header">
     <p class="card-header-title">
       {{ description }}
@@ -23,7 +23,7 @@
           </thead>
           <tbody>
           {%- for item in exp_items -%}
-            <tr class="{{ item.status }}">
+            <tr class="{{ item.status }}" data-index="{{ item.idx }}">
               <td class="status">{{ item.status }}</td>
               <td class="type">{{ item.type }}</td>
               <td class="date">{{ item.date }}</td>
