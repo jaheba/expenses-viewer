@@ -242,20 +242,24 @@ def fix_preamble(xml, preamble):
 def get_preamble(text):
     return preamble_re.search(text).group(0)
 
-def set_submitted(path, changes):
+def get_xml(path):
     with open(path) as xml_file:
         xml = xml_file.read()
-        parser = etree.XMLParser(remove_comments=False)
+        parser = etree.XMLParser(remove_comments=False, remove_blank_text=True)
         tree = etree.parse(StringIO(xml), parser=parser)
+    return xml, tree
 
+def set_status(path, changes, status):
+    xml, tree = get_xml(path)
     expenses = tree.xpath('expense')
 
     for exp, item in changes:
-        expenses[exp][item+1].set('status', 'submitted')
+        expenses[exp][item+1].set('status', status)
 
     new = etree.tostring(tree)
     with open(path, 'w') as xml_file:
         xml_file.write(fix_preamble(new, get_preamble(xml)))
+
 
 def main(path):
     try:

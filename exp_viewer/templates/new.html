@@ -2,59 +2,222 @@
 {% from "expense.macro.html" import expense_table %}
 
 {% block body %}
-<br>
-<label class="label">Description</label>
-<p class="control">
-  <input class="input" type="text" placeholder="Description">
-</p>
 
-<div class="control is-horizontal">
-  <div class="control is-grouped">
-  <span class="select">
-    <select>
-      <option>travel</option>
-      <option>accom</option>
-      <option>misc</option>
-      <option>food</option>
-      <option>equipment</option>
-    </select>
-  </span>
-
-    <p class="control has-icon has-icon-right">
-        <input class="input" type="date" placeholder="Date">
-        <i class="fa fa-gbp"></i>
-    </p>
-
-    <p class="control has-icon has-icon-right">
-        <input class="input" type="number" placeholder="GBP">
-        <i class="fa fa-gbp"></i>
-    </p>
-
-    <p class="control has-icon has-icon-right">
-        <input id="paidby" class="input" type="text" placeholder="Paid By">
-        <i class="fa fa-user"></i>
-    </p>
-
-    <p class="control has-icon has-icon-right">
-        <input id="for" class="input" type="text" placeholder="For">
-        <i class="fa fa-users"></i>
-    </p>
-
-    <p class="control has-icon has-icon-right">
-        <input id="for" class="input" type="text" placeholder="Description">
-        <i class="fa fa-users"></i>
-    </p>
-    <span class="select">
-    <select>
-      <option>cooler::travel</option>
-      <option>accom</option>
-      <option>misc</option>
-      <option>food</option>
-      <option>equipment</option>
-    </select>
-  </span>
-  </div>
+<div class="navbar-right">
+  <p class="navbar-item"><a id="show-btn" class="button is-primary">Show</a></p>
 </div>
 
+<script id="template" type="html/tpl">
+<div>
+  <div class="item notification">
+    <button class="delete"></button>
 
+    <div class="columns full-width">
+      <div class="column">
+        <label class="label">Type</label>
+        <p class="control">
+          <span class="select">
+            <select class="type">
+              <option>travel</option>
+              <option>accom</option>
+              <option>misc</option>
+              <option>food</option>
+              <option>equipment</option>
+            </select>
+          </span>
+        </p>
+      </div>
+      <div class="column">
+        <label class="label">Paid By</label>
+        <p class="control">
+          <span class="select">
+            <select class="paidby">
+              <option>other</option>
+              <option>gpc</option>
+              <option>ebarret</option>
+              <option>ltratt</option>
+              <option>nvasudevan</option>
+              <option>gfrench</option>
+              <option>snim2</option>
+              <option>jschulz</option>
+            </select>
+          </span>
+        </p>
+      </div>
+      <div class="column">
+        <label class="label">Budget</label>
+        <p class="control">
+          <span class="select">
+            <select class="budget">
+              <option>general1</option>
+
+              <option>editors1::travel</option>
+              <option>editors1::equipment</option>
+              <option>cooler::travel</option>
+              <option>cooler::equipment</option>
+              <option>cooler::summer</option>
+
+              <option>editors2::travel</option>
+
+              <option>lecture::travel</option>
+              <option>lecture::equipment</option>
+              <option>lecture::other</option>
+
+              <option>editors4::misc</option>
+            </select>
+          </span>
+        </p>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column is-half">
+        <label class="label">Description</label>
+        <input class="input description" type="text" placeholder="What the money was spent on">
+      </div>
+      <div class="column is-half">
+        <label class="label">For</label>
+        <p class="control has-icon has-icon-right">
+          <input class="input for" type="text" placeholder="Can be empty">
+          <i class="fa fa-users"></i>
+        </p>
+      </div>
+    </div>
+
+    <div class="columns">
+      <div class="column">
+        <label class="label">Date</label>
+        <input class="input date" type="date" placeholder="Date">
+      </div>
+      <div class="column">
+        <label class="label">Amount</label>
+        <p class="control has-icon has-icon-right">
+          <input class="amount input" type="number" placeholder="GBP">
+          <i class="fa fa-gbp"></i>
+        </p>
+      </div>
+      <div class="column">
+        <label class="label">Other Currency (optional)</label>
+        <p class="control has-addons">
+          <input class="input alt-amount" type="number" placeholder="Amount">
+          <input class="input alt-currency" type="text" placeholder="Currency">
+        </p>
+      </div>
+    </div>
+  </div>
+  <hr>
+</div>
+</script>
+
+<div class="container">
+<br>
+<div class="box is-warning">
+
+  <label class="label">Description</label>
+  <p class="control">
+    <input id="desc" class="input" type="text" placeholder="Description">
+  </p>
+
+  <hr>
+
+  <div id="entries">
+  </div>
+
+
+  <div class="columns">
+    <div class="column is-center">
+      <a id="btn-add" class="button">ADD ENTRY</a>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-container">
+    <div class="modal-content">
+    <div class="box">
+      <pre id="modal-content" ></pre><br>
+      <button class="button copy close is-dark">Copy and close</button>
+    </div>
+    </div>
+  </div>
+  <button class="modal-close close"></button>
+</div>
+
+<script>
+$(function(){
+  let template = $("#template");
+  let entries = $("#entries");
+
+  let add_entry = () => $(template.html()).appendTo(entries);
+
+  get_values = box => ({
+    type: $(".type", box).val(),
+    paidby: $(".paidby", box).val(),
+    budget: $(".budget", box).val(),
+    description: $(".description", box).val(),
+    for: $(".for", box).val(),
+    date: $(".date", box).val(),
+    gbp: $(".amount", box).val(),
+    alt: {
+      amount: $(".alt-amount", box).val(),
+      cur: $(".alt-currency", box).val()
+    },
+  });
+
+  let new_item = e => {
+    let last = get_values($(".item").last());
+    let entry = add_entry();
+    $(".type", entry).val(last.type);
+    $(".paidby", entry).val(last.paidby);
+    $(".budget", entry).val(last.budget);
+    $(".date", entry).val(last.date);
+    $(".alt-currency", entry).val(last.alt.cur);
+    };
+
+    $("#btn-add").click(new_item);
+
+  $(document).on("click", "button.delete",
+    e => e.target.parentElement.parentElement.remove()
+  );
+
+  function copyToClipboard(element) {
+      var $temp = $("<textarea>")
+      $("body").append($temp);
+      $temp.val($(element).text()).select();
+      document.execCommand("copy");
+      $temp.remove();
+  }
+
+
+  let show = () => {
+    let items = _.map($(".item"), b => {
+      return get_values(b);
+    });
+    let data = {
+      description: $("#desc").val(),
+      items: items
+    };
+
+    $.ajax({
+        type: "POST",
+        url: "/new",
+        data: JSON.stringify(data),
+        contentType: "application/json; charset=utf-8",
+    }).done(function(data){
+      $("#modal-content").text(data);
+      $(".modal").addClass("is-active");
+    });
+  };
+
+  $("#show-btn").click(show);
+  $(".close, .modal-background").click(e => $(".modal").removeClass("is-active") )
+
+  $(".copy").click(e => copyToClipboard($("#modal-content")));
+
+  add_entry();
+
+});
+</script>
 {% endblock %}

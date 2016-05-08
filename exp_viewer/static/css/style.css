@@ -1,14 +1,15 @@
 
 table.expense-table tr.N {
-    background-color: rgba(252, 228, 115, 0.3);
+    background-color: rgba(237, 108, 99, 0.21);
 }
 
 table.expense-table tr.S {
-    background-color: rgba(31, 200, 219, 0.2);
+    background-color: rgba(252, 228, 115, 0.3);
 }
 
 table.expense-table tr.R {
-    background-color: rgba(151, 205, 118, 0.2);
+    /*background-color: rgba(151, 205, 118, 0.2);*/
+    background-color: rgba(31, 200, 219, 0.2);
 }
 
 .card + .card {
@@ -78,4 +79,26 @@ tr.ready {
 
 #save-btn {
     display: none;
+}
+
+.shallow {
+    opacity: 0.2;
+}
+
+.full-width select, .full-width .select {
+    width: 100%;
+}
+
+.box.is-warning {
+    /*background-color: #fce473;*/
+    background-color: rgba(252, 228, 115, 0.4);
+
+}
+
+.is-center {
+    text-align: center;
+}
+
+.modal-content {
+    font-size: 1.5em;
 }

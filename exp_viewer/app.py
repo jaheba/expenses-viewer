@@ -5,7 +5,9 @@ import tempfile
 import flask
 from flask import render_template, request
 
-from parser import parse, set_submitted
+from lxml import etree
+
+from parser import parse, set_status
 import json
 
 app = flask.Flask(__name__)
@@ -36,7 +38,16 @@ def index():
 
 @app.route('/submit')
 def submit():
-    return render_template('expense.html', expenses=load(), submit="true")
+    return render_template('expense.html', expenses=load(), submit="submit")
+
+@app.route('/reimburse')
+def reimburse():
+    return render_template('expense.html', expenses=load(), submit="reimburse")
+
+@app.route('/accounting')
+def accounting():
+    return render_template('expense.html', expenses=load(), submit="accounting")
+
 
 @app.route('/new')
 def new():
@@ -44,11 +55,39 @@ def new():
 
 @app.route('/submit', methods=['POST'])
 def submit_post():
-    set_submitted(sys.argv[1], request.json)
+    set_status(sys.argv[1], request.json, 'submitted')
     return 'ok'
 
 
+@app.route('/reimburse', methods=['POST'])
+def reimburse_post():
+    set_status(sys.argv[1], request.json, 'reimbursed')
+    return 'ok'
+
+@app.route('/accounting', methods=['POST'])
+def accounting_post():
+    set_status(sys.argv[1], request.json, 'accounted')
+    return 'ok'
+
+@app.route('/new', methods=["POST"])
+def new_post():
+    node = etree.Element("expense")
+    etree.SubElement(node, "desc").text = request.json['description']
+    fields = 'paidby', 'buget', 'date', 'gbp', 'for'
+    for item in request.json['items']:
+        sub = etree.SubElement(node, item['type'])
+        for field in fields:
+            if item.get(field):
+                sub.set(field, item.get(field))
+
+    return etree.tostring(node, pretty_print=True)
+
+
 def main():
+    import logging
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.ERROR)
+
     global json_file
 
     with tempfile.NamedTemporaryFile() as fobj:

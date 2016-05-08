@@ -8,16 +8,53 @@
 <script type="text/javascript" src="static/js/underscore.js"></script>
 
 <body>
-<div id="progress"></div>
   <section class="section">
     <div class="container">
+    <nav class="navbar">
       <div class="heading">
-        <h1 class="title">Expenses Overview</h1>
-        <h2 class="subtitle">
-        </h2>
-        {% block body %}{% endblock %}
+        <h1 class="title">Expenses</h1>
       </div>
+
+        <div class="tabs is-centered">
+          <ul>
+            <li class="{{ 'is-active' if submit == 'false' }}">
+              <a href="/">
+                <span class="icon is-small"><i class="fa fa-bar-chart"></i></span>
+                <span>Overview</span>
+              </a>
+            </li>
+            <li>
+              <a href="/new">
+                <span class="icon is-small"><i class="fa fa-file-text-o"></i></span>
+                <span>Create Expense</span>
+              </a>
+            </li>
+            <li>
+            <li class="shallow {{ 'is-active' if submit == 'submit' }}">
+              <a href="/submit">
+                <span class="icon is-small"><i class="fa fa-search"></i></span>
+                <span>Review</span>
+              </a>
+            </li>
+            <li class="{{ 'is-active' if submit == 'reimburse' }}">
+              <a href="/reimburse">
+                <span class="icon is-small"><i class="fa fa-money"></i></span>
+                <span>Confirm</span>
+              </a>
+            </li>
+            <li class="shallow {{ 'is-active' if submit == 'accounting' }}">
+              <a href="/accounting">
+                <span class="icon is-small"><i class="fa fa-check"></i></span>
+                <span>Accounting</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+    </nav>
+
+    {% block body %}{% endblock %}
     </div>
+
   </section>
 
 <script type="text/javascript" src="static/js/search.js"></script>

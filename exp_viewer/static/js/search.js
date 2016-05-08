@@ -139,13 +139,12 @@ $(function (){
         if(!dry) {cards.show();}
     };
 
-    if($("#submit-flag").data("flag")) {
+    if($("#submit-flag").data("flag") == 'submit') {
         $("#notsubmitted").prop("checked", true).parent().hide();
         $("#submitted").prop("checked", false).parent().hide();
         $("#reimbursed").prop("checked", false).parent().hide();
         $("#accounted").prop("checked", false).parent().hide();
 
-        // $("tr.N td.type").html('<strong><a href="#">ACCEPT</a></strong>');
         $("tr.N").addClass("ready");
         $("table").on("click", "tr.N", function(e){
             $(this).removeClass("N").addClass("S").addClass("dirty");
@@ -166,14 +165,89 @@ $(function (){
                 contentType: "application/json; charset=utf-8",
                 // dataType: "json"
             }).done(function(data){
-                window.location.reload()
-
-                $("#save-btn").removeClass("is-loading");
+                $("#expenses").css("opacity", 0.2)
+                $("#save-btn").addClass("is-warning");
+                setTimeout(function(){
+                    window.location.reload()
+                }, 1000);
             });
         })
 
         $(document).on("click", ".dirty", function(e){
             $(this).removeClass("S").addClass("N").removeClass("dirty");
+        });
+    } else if($("#submit-flag").data("flag") == 'reimburse') {
+        $("#notsubmitted").prop("checked", false).parent().hide();
+        $("#submitted").prop("checked", true).parent().hide();
+        $("#reimbursed").prop("checked", false).parent().hide();
+        $("#accounted").prop("checked", false).parent().hide();
+
+        $("tr.S").addClass("ready");
+        $("table").on("click", "tr.S", function(e){
+            $(this).removeClass("S").addClass("R").addClass("dirty");
+            return false;
+        });
+
+        $(document).on("click", ".dirty", function(e){
+            $(this).removeClass("R").addClass("S").removeClass("dirty");
+        });
+
+        $("#save-btn").show().click(function(){
+            $(this).addClass("is-loading");
+            let submitted = _.map($(".dirty"), function(self){
+                let $self = $(self);
+                return [$self.closest(".card").data('index'), $self.data('index')];
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/reimburse",
+                data: JSON.stringify(submitted),
+                contentType: "application/json; charset=utf-8",
+                // dataType: "json"
+            }).done(function(data){
+                $("#expenses").css("opacity", 0.2)
+                $("#save-btn").addClass("is-warning");
+                setTimeout(function(){
+                    window.location.reload()
+                }, 1000);
+            });
+        });
+    } else if($("#submit-flag").data("flag") == 'accounting') {
+        $("#notsubmitted").prop("checked", false).parent().hide();
+        $("#submitted").prop("checked", false).parent().hide();
+        $("#reimbursed").prop("checked", true).parent().hide();
+        $("#accounted").prop("checked", false).parent().hide();
+
+        $("tr.R").addClass("ready");
+        $("table").on("click", "tr.R", function(e){
+            $(this).removeClass("R").addClass("A").addClass("dirty");
+            return false;
+        });
+
+        $(document).on("click", ".dirty", function(e){
+            $(this).removeClass("A").addClass("R").removeClass("dirty");
+        });
+
+        $("#save-btn").show().click(function(){
+            $(this).addClass("is-loading");
+            let submitted = _.map($(".dirty"), function(self){
+                let $self = $(self);
+                return [$self.closest(".card").data('index'), $self.data('index')];
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/accounting",
+                data: JSON.stringify(submitted),
+                contentType: "application/json; charset=utf-8",
+            }).done(function(data){
+                $("#expenses").css("opacity", 0.2)
+                $("#save-btn").addClass("is-warning");
+                setTimeout(function(){
+                    window.location.reload()
+                }, 1000);
+            });
         });
     }
 
