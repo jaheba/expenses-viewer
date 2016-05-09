@@ -101,13 +101,12 @@ def new_post():
         if item['alt']['amount']:
             sub.set(item['alt']['cur'], item['alt']['amount'])
 
-    return etree.tostring(node, pretty_print=True)
+    return etree.tostring(node, pretty_print=True).replace(' '*2, ' '*4)
 
 
 @app.route('/save', methods=['POST'])
 def save_post():
     new_xml = request.json['xml']
-    new_xml = new_xml.replace('  ', '    ')
     node = etree.fromstring(new_xml)
 
     old_xml, tree = get_xml(expenses_path)
