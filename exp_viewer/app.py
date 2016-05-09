@@ -78,7 +78,7 @@ def accounting_post():
 @app.route('/new', methods=["POST"])
 def new_post():
     node = etree.Element("expense")
-    etree.SubElement(node, "desc").text = request.json['description']
+    etree.SubElement(node, "descr").text = request.json['description']
     fields = 'paidby', 'buget', 'date', 'gbp', 'for'
     _cache = None
 
