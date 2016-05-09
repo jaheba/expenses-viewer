@@ -9,6 +9,8 @@ setup(
     install_requires=[
         'flask',
         'lxml',
+        'frozen-flask',
+        'click',
     ],
     entry_points={
         'console_scripts': [
