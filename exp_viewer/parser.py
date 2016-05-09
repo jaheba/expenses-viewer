@@ -39,6 +39,13 @@ item_requirements = {
 paiby_other = set(['other', 'purchaseorder'])
 
 
+class ParseError(Exception):
+    def __init__(self, message, node):
+        Exception.__init__(self, message)
+        self.message = message
+        self.node = node
+
+
 class Budget(object):
     @classmethod
     def from_node(cls, node):
@@ -100,6 +107,10 @@ class Expense(object):
         }
 
 
+def check(node, condition, message):
+    if not condition:
+        raise ParseError(message, node)
+
 class ExpenseItem(object):
     @classmethod
     def from_node(cls, node, env):
@@ -107,14 +118,19 @@ class ExpenseItem(object):
         status = node.get('status')
         paidby = node.get('paidby')
         date = node.get('date')
-        gbp = Decimal(node.get('gbp'))
+        gbp = node.get('gbp')
 
-        assert node.tag in expense_types, 'Unknown expense tag %s' % node.tag
-        assert budgetid in env.budgets, 'Unknown budget ID %s.' % budgetid
-        assert status in status_types, 'Unknown status %s.' % status
-        assert date, 'Required attribute date missing'
-        assert gbp, 'Required attribute gbp missing'
-        assert paidby in paiby_other or paidby in env.people, 'Unknown person ' + paidby
+        check(node, node.tag in expense_types, 'Unknown expense tag %s' % node.tag)
+        check(node, budgetid in env.budgets, 'Unknown budget ID %s.' % budgetid)
+        check(node, status in status_types, 'Unknown status %s.' % status)
+        check(node, date, 'Required attribute date missing')
+        check(node, gbp, 'Required attribute gbp missing')
+        check(node, paidby in paiby_other or paidby in env.people, 'Unknown person ' + paidby)
+
+        try:
+            gbp = Decimal(gbp)
+        except TypeError:
+            raise ParseError(node, 'Invalid value for gbp `%s`' %gbp)
 
         budget = env.budgets[budgetid]
 
