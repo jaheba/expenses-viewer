@@ -74,7 +74,7 @@ let calculate_subtotals = (cards) => {
             _.pluck($("td.gbp", $("tbody tr", table).not('.deselected')), 'textContent'),
             parseFloat
         ));
-        $("tfoot td.subtotal span.value", table).text(subtotal.toFixed(2));
+        $("tfoot td.subtotal strong.value", table).text(subtotal.toFixed(2));
     });
 }
 
