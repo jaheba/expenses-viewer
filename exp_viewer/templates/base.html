@@ -23,6 +23,7 @@
                 <span>Overview</span>
               </a>
             </li>
+          {% if not read_only %}
             <li>
               <a href="/new">
                 <span class="icon is-small"><i class="fa fa-file-text-o"></i></span>
@@ -48,6 +49,7 @@
                 <span>Accounting</span>
               </a>
             </li>
+          {% endif %}
           </ul>
         </div>
     </nav>

@@ -12,17 +12,23 @@ import json
 
 app = flask.Flask(__name__)
 json_file = None
-
+expenses_path = None
 version = 0
+CACHING = False
+
+def get_expenses():
+    expenses = parse(expenses_path)
+    return list(reversed([exp.to_json(i) for i, exp in enumerate(expenses.expenses)]))
 
 def load():
-    global version
-    time = os.path.getmtime(sys.argv[1])
-    if time != version:
-        version = time
+    if not CACHING:
+        return get_expenses()
 
-        expenses = parse(sys.argv[1])
-        data = list(reversed([exp.to_json(i) for i, exp in enumerate(expenses.expenses)]))
+    global version
+    time = os.path.getmtime(expenses_path)
+    if CACHING and time != version:
+        version = time
+        data = get_expenses()
         json_file.seek(0)
         json.dump(data, json_file)
         json_file.flush()
@@ -55,18 +61,18 @@ def new():
 
 @app.route('/submit', methods=['POST'])
 def submit_post():
-    set_status(sys.argv[1], request.json, 'submitted')
+    set_status(expenses_path, request.json, 'submitted')
     return 'ok'
 
 
 @app.route('/reimburse', methods=['POST'])
 def reimburse_post():
-    set_status(sys.argv[1], request.json, 'reimbursed')
+    set_status(expenses_path, request.json, 'reimbursed')
     return 'ok'
 
 @app.route('/accounting', methods=['POST'])
 def accounting_post():
-    set_status(sys.argv[1], request.json, 'accounted')
+    set_status(expenses_path, request.json, 'accounted')
     return 'ok'
 
 @app.route('/new', methods=["POST"])
@@ -89,10 +95,12 @@ def main():
     log.setLevel(logging.ERROR)
 
     global json_file
+    global expenses_path
+    expenses_path = sys.argv[1]
 
     with tempfile.NamedTemporaryFile() as fobj:
         json_file = fobj
-        app.run()
+        app.run(debug=True)
 
 if __name__ == '__main__':
     main()

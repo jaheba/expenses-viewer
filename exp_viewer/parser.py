@@ -245,7 +245,7 @@ def get_preamble(text):
 def get_xml(path):
     with open(path) as xml_file:
         xml = xml_file.read()
-        parser = etree.XMLParser(remove_comments=False, remove_blank_text=True)
+        parser = etree.XMLParser(remove_comments=False)
         tree = etree.parse(StringIO(xml), parser=parser)
     return xml, tree
 
