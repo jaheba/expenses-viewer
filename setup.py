@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='expense-viewer',
-    version='0.1',
+    version='0.2',
     packages=['exp_viewer'],
     install_requires=[
         'flask',
