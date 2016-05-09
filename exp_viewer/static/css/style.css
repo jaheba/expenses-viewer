@@ -1,15 +1,24 @@
 
+.control.N,
 table.expense-table tr.N {
     background-color: rgba(237, 108, 99, 0.21);
 }
 
+.control.S,
 table.expense-table tr.S {
     background-color: rgba(252, 228, 115, 0.3);
 }
 
+.control.R,
 table.expense-table tr.R {
     /*background-color: rgba(151, 205, 118, 0.2);*/
     background-color: rgba(31, 200, 219, 0.2);
+}
+
+.control.A,
+table.expense-table tr.A {
+    /*background-color: rgba(151, 205, 118, 0.2);*/
+    background-color: rgba(200, 200, 200, 0.2);
 }
 
 .card + .card {
@@ -68,6 +77,7 @@ th.gbp {
 .dirty td {
     font-style: italic;
     font-weight: bold;
+    color: red;
 }
 
 tr.ready {
@@ -105,4 +115,10 @@ tr.ready {
 
 .subtotal {
     text-align: right;
+}
+
+.control.with-padding {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
