@@ -102,3 +102,7 @@ tr.ready {
 .modal-content {
     font-size: 1.5em;
 }
+
+.subtotal {
+    text-align: right;
+}

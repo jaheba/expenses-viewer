@@ -37,7 +37,7 @@ var search_for = function(query, field, cards, fuzzy) {
     }
 
     return _.filter(cards, function(card){
-        var tds = $("td." + field, card);
+        var tds = $("tbody td." + field, card);
         return _.some(_.map(tds, function(td){
 
             if (comp(td.textContent)) {
@@ -55,7 +55,7 @@ var filter_boxes = function(status, cards) {
     let count = 0;
 
     return _.filter(cards, function(card){
-        return _.some(_.map($("td.status", card), function(td){
+        return _.some(_.map($("tbody td.status", card), function(td){
 
             if (status.includes(td.textContent)) {
                 return true
@@ -65,6 +65,18 @@ var filter_boxes = function(status, cards) {
     });
 }
 
+
+let calculate_subtotals = (cards) => {
+    let sum = xs => _.reduce(xs, (m,a)=>m+a, 0);
+
+    _.each($("table", cards), table => {
+        let subtotal = sum(_.map(
+            _.pluck($("td.gbp", $("tbody tr", table).not('.deselected')), 'textContent'),
+            parseFloat
+        ));
+        $("tfoot td.subtotal span.value", table).text(subtotal.toFixed(2));
+    });
+}
 
 $(function (){
     var cards = cards = $(".card");
@@ -109,6 +121,7 @@ $(function (){
         cards.hide();
 
         cards = $(search_for(new_val, e.target.id, cards));
+        calculate_subtotals(cards);
         cards.show();
     };
 
@@ -128,7 +141,7 @@ $(function (){
         if(amount){
             cards = $(search_for(amount, "gbp", cards, Math.max(fuzzy?1:0, amount*fuzzy)));
         }
-        if(!dry) {cards.show();}
+        if(!dry) {calculate_subtotals(cards); cards.show();}
     }
 
     let cb_handler = function(e, dry) {
@@ -155,7 +168,7 @@ $(function (){
         }
         if(!dry) {cards.hide();}
         cards = $(filter_boxes(status, cards));
-        if(!dry) {cards.show();}
+        if(!dry) {calculate_subtotals(cards); cards.show();}
     };
 
     if($("#submit-flag").data("flag") == 'submit') {
@@ -285,6 +298,7 @@ $(function (){
 
     window.reset = reset;
     reset();
+    calculate_subtotals(cards);
     $("#expenses").show();
 });
 
