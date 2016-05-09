@@ -3,10 +3,6 @@
 
 {% block body %}
 
-<div class="navbar-right">
-  <p class="navbar-item"><a id="show-btn" class="button is-primary">Show</a></p>
-</div>
-
 <script id="template" type="html/tpl">
 <div>
   <div class="item notification">
@@ -115,6 +111,10 @@
 </div>
 </script>
 
+<div class="navbar-right">
+  <p class="navbar-item"><a class="show-btn button is-primary">Show</a></p>
+</div>
+
 <div class="container">
 <br>
 <div class="box is-warning">
@@ -138,6 +138,11 @@
   </div>
 
 </div>
+</div>
+
+<br>
+<div class="navbar-right">
+  <p class="navbar-item"><a class="show-btn button is-primary">Show</a></p>
 </div>
 
 <div class="modal">
@@ -264,7 +269,7 @@ $(function(){
     });
   };
 
-  $("#show-btn").click(show);
+  $(".show-btn").click(show);
   $(".close, .modal-background").click(e => $(".modal").removeClass("is-active") )
 
   $(".copy").click(e => copyToClipboard($("#modal-content")));
