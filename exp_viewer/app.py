@@ -89,18 +89,23 @@ def new_post():
     return etree.tostring(node, pretty_print=True)
 
 
-def main():
-    import logging
-    log = logging.getLogger('werkzeug')
-    log.setLevel(logging.ERROR)
-
-    global json_file
+def make_app(expenses):
     global expenses_path
-    expenses_path = sys.argv[1]
+    expenses_path = expenses
+
+def run(debug=True):
+    # import logging
+    # log = logging.getLogger('werkzeug')
+    # log.setLevel(logging.ERROR)
+    global json_file
 
     with tempfile.NamedTemporaryFile() as fobj:
         json_file = fobj
-        app.run(debug=True)
+        app.run(debug=debug)
+
+def main():
+    make_app(sys.argv[1])
+    run()
 
 if __name__ == '__main__':
     main()
