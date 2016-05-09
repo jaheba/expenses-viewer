@@ -7,9 +7,28 @@ var hide_all = function() {
 var search_for = function(query, field, cards, fuzzy) {
     var comp;
     if (field == "gbp") {
-        comp = function(other){
-            return Math.abs(query - parseFloat(other)) <= fuzzy
-        };
+        let match;
+        query = query.replace(/ /g,'');
+
+        if(match=query.match(/(<|<=|>|>=)(\d+)/)) {
+            let self = parseFloat(match[2]);
+            comp = {
+                "<": other => parseFloat(other) < self,
+                "<=": other => parseFloat(other) <= self,
+                ">": other => parseFloat(other) > self,
+                ">=": other => parseFloat(other) >= self
+            }[match[1]];
+            console.debug(comp)
+        } else if (match=query.match(/(\d+),(\d+)/)) {
+            let lower = parseFloat(match[1]);
+            let upper = parseFloat(match[2]);
+            comp = other => {
+                let o = parseFloat(other);
+                return lower <= o && o <= upper;
+            }
+        } else {
+            comp = other => Math.abs(parseFloat(query) - parseFloat(other)) <= fuzzy;
+        }
     } else {
         var q = query.toUpperCase();
         comp = function(other){
@@ -103,7 +122,7 @@ $(function (){
             cb_handler(null, true);
             filter_searches();
         }
-        let amount = parseFloat(gbp.val());
+        let amount = gbp.val();
         let fuzzy = $("#fuzzy").is(":checked")? 0.1 : 0;
 
         if(amount){
