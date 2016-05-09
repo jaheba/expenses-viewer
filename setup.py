@@ -11,7 +11,10 @@ setup(
         'lxml',
     ],
     entry_points={
-        'console_scripts': 'expenses-viewer=exp_viewer.app:main'
+        'console_scripts': [
+            'expenses-viewer=exp_viewer.app:main',
+            'sd-cli=exp_viewer.cli:cli',
+        ]
     },
     include_package_data = True,
 
