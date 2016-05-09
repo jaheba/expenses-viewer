@@ -1,8 +1,7 @@
 
-
 var hide_all = function() {
     $(".card").hide();
-}
+};
 
 var search_for = function(query, field, cards, fuzzy) {
     var comp;
@@ -46,7 +45,8 @@ var search_for = function(query, field, cards, fuzzy) {
             $(td.parentElement).addClass("deselected");
         }));
     });
-}
+};
+
 let progressbar = $("#progress");
 
 
