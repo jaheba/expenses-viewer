@@ -274,8 +274,9 @@ def set_status(path, changes, status):
 
     new = etree.tostring(tree)
     with open(path, 'w') as xml_file:
-        xml_file.write(fix_preamble(new, get_preamble(xml)))
+        xml_file.write(fix_preamble(new, get_preamble(xml))+'\n')
 
+    return 'ok'
 
 def main(path):
     try:

@@ -121,7 +121,7 @@
 
   <label class="label">Description</label>
   <p class="control">
-    <input id="desc" class="input" type="text" placeholder="Description" required>
+    <input id="description" class="input" type="text" placeholder="Overall description of the expense" required>
     <span class="help is-danger hidden">Required</span>
   </p>
 
@@ -150,8 +150,11 @@
   <div class="modal-container">
     <div class="modal-content">
     <div class="box">
-      <pre id="modal-content" ></pre><br>
-      <button class="button copy close is-dark">Copy and close</button>
+      <pre id="modal-content" >longer text here ..... longer text here ..... longer text here ..... longer text here .....</pre><br>
+        <button class="button copy close is-dark">Copy and close</button>
+        <div style="float:right">
+          <button class="button save is-danger">Save to XML</button>
+        </div>
     </div>
     </div>
   </div>
@@ -253,8 +256,9 @@ $(function(){
     let items = _.map($(".item"), b => {
       return get_values(b);
     });
+
     let data = {
-      description: $("#desc").val(),
+      description: $("#description").val(),
       items: items
     };
 
@@ -274,6 +278,17 @@ $(function(){
 
   $(".copy").click(e => copyToClipboard($("#modal-content")));
 
+  $('.save').click(e => {
+    let data = { xml: $("#modal-content").text() };
+    $.ajax({
+        type: "POST",
+        url: "/save",
+        data: JSON.stringify(data),
+        contentType: "application/json; charset=utf-8",
+    }).done(function(data){
+      $(".modal").removeClass("is-active");
+    });
+  })
   add_entry();
 
 });

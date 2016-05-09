@@ -7,8 +7,9 @@ from flask import render_template, request
 
 from lxml import etree
 
-from parser import parse, set_status, item_requirements
+from parser import parse, set_status, item_requirements, get_xml, fix_preamble, get_preamble
 import json
+from StringIO import StringIO
 
 app = flask.Flask(__name__)
 json_file = None
@@ -100,12 +101,27 @@ def new_post():
         if item['alt']['amount']:
             sub.set(item['alt']['cur'], item['alt']['amount'])
 
-
-
-
-
     return etree.tostring(node, pretty_print=True)
 
+
+@app.route('/save', methods=['POST'])
+def save_post():
+    new_xml = request.json['xml']
+    new_xml = new_xml.replace('  ', '    ')
+    node = etree.fromstring(new_xml)
+
+    old_xml, tree = get_xml(expenses_path)
+    tree.getroot().append(node)
+
+    new = etree.tostring(tree, pretty_print=True)
+    pos = new.rfind('</expenses>')
+
+    new = new[:pos] + '\n\n</expenses>\n'
+
+    with open(expenses_path, 'w') as xml_file:
+        xml_file.write(fix_preamble(new, get_preamble(old_xml)))
+
+    return 'ok'
 
 def make_app(expenses):
     global expenses_path
@@ -123,7 +139,7 @@ def run(debug=True):
 
 def main():
     make_app(sys.argv[1])
-    run()
+    run(debug=True)
 
 if __name__ == '__main__':
     main()
