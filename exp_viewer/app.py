@@ -7,7 +7,7 @@ from flask import render_template, request
 
 from lxml import etree
 
-from parser import parse, set_status
+from parser import parse, set_status, item_requirements
 import json
 
 app = flask.Flask(__name__)
@@ -80,11 +80,29 @@ def new_post():
     node = etree.Element("expense")
     etree.SubElement(node, "desc").text = request.json['description']
     fields = 'paidby', 'buget', 'date', 'gbp', 'for'
+    _cache = None
+
     for item in request.json['items']:
         sub = etree.SubElement(node, item['type'])
         for field in fields:
-            if item.get(field):
+            if field in item:
                 sub.set(field, item.get(field))
+        if not sub.get('for'):
+            if _cache is None:
+                _cache = parse(expenses_path)
+            sub.set('for', _cache.people[item['paidby']].name)
+
+        if item['type'] in item_requirements:
+            sub.set(item_requirements[item['type']], item['description'])
+        else:
+            sub.text = item['description']
+
+        if item['alt']['amount']:
+            sub.set(item['alt']['cur'], item['alt']['amount'])
+
+
+
+
 
     return etree.tostring(node, pretty_print=True)
 

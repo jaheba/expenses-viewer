@@ -73,12 +73,15 @@
     <div class="columns">
       <div class="column is-half">
         <label class="label">Description</label>
-        <input class="input description" type="text" placeholder="What the money was spent on">
+        <input class="input description" required type="text" placeholder="What the money was spent on">
+        <span class="help is-danger hidden">Required</span>
+
       </div>
       <div class="column is-half">
         <label class="label">For</label>
         <p class="control has-icon has-icon-right">
-          <input class="input for" type="text" placeholder="Can be empty">
+          <input class="input for" type="text" placeholder="Can be empty if paid by is not 'other'">
+          <span class="help is-danger hidden">Required if paid by is other</span>
           <i class="fa fa-users"></i>
         </p>
       </div>
@@ -87,20 +90,23 @@
     <div class="columns">
       <div class="column">
         <label class="label">Date</label>
-        <input class="input date" type="date" placeholder="Date">
+        <input class="input date" required type="date" placeholder="Date">
+        <span class="help is-danger hidden">Required</span>
+
       </div>
       <div class="column">
         <label class="label">Amount</label>
         <p class="control has-icon has-icon-right">
-          <input class="amount input" type="number" placeholder="GBP">
+          <input class="amount input" type="number" required placeholder="GBP">
+          <span class="help is-danger hidden">Invalid</span>
           <i class="fa fa-gbp"></i>
         </p>
       </div>
       <div class="column">
         <label class="label">Other Currency (optional)</label>
         <p class="control has-addons">
-          <input disabled class="input alt-amount" type="number" placeholder="Amount">
-          <input disabled class="input alt-currency" type="text" placeholder="Currency">
+          <input class="input alt-amount" type="number" placeholder="Amount">
+          <input class="input alt-currency" type="text" placeholder="Currency">
         </p>
       </div>
     </div>
@@ -115,7 +121,8 @@
 
   <label class="label">Description</label>
   <p class="control">
-    <input id="desc" class="input" type="text" placeholder="Description">
+    <input id="desc" class="input" type="text" placeholder="Description" required>
+    <span class="help is-danger hidden">Required</span>
   </p>
 
   <hr>
@@ -151,6 +158,48 @@ $(function(){
   let template = $("#template");
   let entries = $("#entries");
 
+  let check_required = () => {
+    let ok = true;
+    $("input.is-danger").removeClass("is-danger");
+    $(".help.is-danger").addClass("hidden");
+    _.each($("input:required"), item => {
+      if(!item.value) {
+        $(item).addClass("is-danger");
+        $(item).next().removeClass("hidden");
+        ok = false;
+      }
+    });
+    return ok;
+  };
+
+  let check_gbp = () => {
+    let ok = true;
+    let pattern = /^\d+(\.\d\d)?$/;
+
+    _.each($("input.amount"), input => {
+      console.debug(input)
+      if(!pattern.test(input.value)){
+        $(input).addClass("is-danger");
+        $(input).next().removeClass("hidden");
+        ok = false;
+      }
+    });
+    return ok;
+  };
+
+  let check_for = () => {
+    let ok = true;
+    _.each($(".item"), item => {
+      let for_ = $(".for", item);
+      if(!for_.val() && $(".paidby", item).val() === "other") {
+        for_.addClass("is-danger");
+        for_.next().removeClass("hidden");
+        ok = false;
+      }
+    });
+    return ok;
+  }
+
   let add_entry = () => $(template.html()).appendTo(entries);
 
   get_values = box => ({
@@ -168,13 +217,13 @@ $(function(){
   });
 
   let new_item = e => {
-    let last = get_values($(".item").last());
-    let entry = add_entry();
-    $(".type", entry).val(last.type);
-    $(".paidby", entry).val(last.paidby);
-    $(".budget", entry).val(last.budget);
-    $(".date", entry).val(last.date);
-    $(".alt-currency", entry).val(last.alt.cur);
+      let last = get_values($(".item").last());
+      let entry = add_entry();
+      $(".type", entry).val(last.type);
+      $(".paidby", entry).val(last.paidby);
+      $(".budget", entry).val(last.budget);
+      $(".date", entry).val(last.date);
+      $(".alt-currency", entry).val(last.alt.cur);
     };
 
     $("#btn-add").click(new_item);
@@ -191,8 +240,11 @@ $(function(){
       $temp.remove();
   }
 
-
   let show = () => {
+    if (!check_required() || !check_gbp() || !check_for()) {
+      return;
+    }
+
     let items = _.map($(".item"), b => {
       return get_values(b);
     });
