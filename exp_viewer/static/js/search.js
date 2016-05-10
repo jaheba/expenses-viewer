@@ -6,11 +6,11 @@ var hide_all = function() {
 var search_for = function(query, field, cards, fuzzy) {
     var comp;
     if (field == "gbp") {
-        let match;
+        var match;
         query = query.replace(/ /g,'');
 
         if(match=query.match(/(<|<=|>|>=)(\d+)/)) {
-            let self = parseFloat(match[2]);
+            var self = parseFloat(match[2]);
             comp = {
                 "<": other => parseFloat(other) < self,
                 "<=": other => parseFloat(other) <= self,
@@ -19,10 +19,10 @@ var search_for = function(query, field, cards, fuzzy) {
             }[match[1]];
             console.debug(comp)
         } else if (match=query.match(/(\d+),(\d+)/)) {
-            let lower = parseFloat(match[1]);
-            let upper = parseFloat(match[2]);
+            var lower = parseFloat(match[1]);
+            var upper = parseFloat(match[2]);
             comp = other => {
-                let o = parseFloat(other);
+                var o = parseFloat(other);
                 return lower <= o && o <= upper;
             }
         } else {
@@ -47,12 +47,12 @@ var search_for = function(query, field, cards, fuzzy) {
     });
 };
 
-let progressbar = $("#progress");
+var progressbar = $("#progress");
 
 
 var filter_boxes = function(status, cards) {
-    let size = $("td.status").length;
-    let count = 0;
+    var size = $("td.status").length;
+    var count = 0;
 
     return _.filter(cards, function(card){
         return _.some(_.map($("tbody td.status", card), function(td){
@@ -66,11 +66,11 @@ var filter_boxes = function(status, cards) {
 }
 
 
-let calculate_subtotals = (cards) => {
-    let sum = xs => _.reduce(xs, (m,a)=>m+a, 0);
+var calculate_subtotals = (cards) => {
+    var sum = xs => _.reduce(xs, (m,a)=>m+a, 0);
 
     _.each($("table", cards), table => {
-        let subtotal = sum(_.map(
+        var subtotal = sum(_.map(
             _.pluck($("td.gbp", $("tbody tr", table).not('.deselected')), 'textContent'),
             parseFloat
         ));
@@ -94,7 +94,7 @@ $(function (){
 
     var filter_searches = function() {
         _.each(["type", "paidby", "for", "description"], function(field) {
-            let query = $("#" + field).val();
+            var query = $("#" + field).val();
             if (query){
                 cards = search_for(query, field, cards);
             }
@@ -102,8 +102,8 @@ $(function (){
     }
 
     var handler = function(e, dry){
-        let old_val = $(e.target).data('old') || "";
-        let new_val = e.target.value;
+        var old_val = $(e.target).data('old') || "";
+        var new_val = e.target.value;
 
 
         if (cards == undefined || old_val.length > new_val.length) {
@@ -125,7 +125,7 @@ $(function (){
         cards.show();
     };
 
-    let gbp = $("#gbp");
+    var gbp = $("#gbp");
     var gbp_handler = function(e, dry){
         if(!dry) {
             cards = $(".card");
@@ -135,8 +135,8 @@ $(function (){
             cb_handler(null, true);
             filter_searches();
         }
-        let amount = gbp.val();
-        let fuzzy = $("#fuzzy").is(":checked")? 0.1 : 0;
+        var amount = gbp.val();
+        var fuzzy = $("#fuzzy").is(":checked")? 0.1 : 0;
 
         if(amount){
             cards = $(search_for(amount, "gbp", cards, Math.max(fuzzy?1:0, amount*fuzzy)));
@@ -144,7 +144,7 @@ $(function (){
         if(!dry) {calculate_subtotals(cards); cards.show();}
     }
 
-    let cb_handler = function(e, dry) {
+    var cb_handler = function(e, dry) {
         if (e && $(e.target).is(":checked")) {
             cards = $(".card");
             $("tr").removeClass("deselected");
@@ -153,7 +153,7 @@ $(function (){
             cards = $(cards);
         }
 
-        let status = "";
+        var status = "";
         if ($("#notsubmitted").is(":checked")){
             status += "N"
         }
@@ -185,8 +185,8 @@ $(function (){
 
         $("#save-btn").show().click(function(){
             $(this).addClass("is-loading");
-            let submitted = _.map($(".dirty"), function(self){
-                let $self = $(self);
+            var submitted = _.map($(".dirty"), function(self){
+                var $self = $(self);
                 return [$self.closest(".card").data('index'), $self.data('index')];
             });
 
@@ -226,8 +226,8 @@ $(function (){
 
         $("#save-btn").show().click(function(){
             $(this).addClass("is-loading");
-            let submitted = _.map($(".dirty"), function(self){
-                let $self = $(self);
+            var submitted = _.map($(".dirty"), function(self){
+                var $self = $(self);
                 return [$self.closest(".card").data('index'), $self.data('index')];
             });
 
@@ -263,8 +263,8 @@ $(function (){
 
         $("#save-btn").show().click(function(){
             $(this).addClass("is-loading");
-            let submitted = _.map($(".dirty"), function(self){
-                let $self = $(self);
+            var submitted = _.map($(".dirty"), function(self){
+                var $self = $(self);
                 return [$self.closest(".card").data('index'), $self.data('index')];
             });
 

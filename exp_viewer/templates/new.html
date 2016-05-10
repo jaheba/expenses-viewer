@@ -161,13 +161,13 @@
   <button class="modal-close close"></button>
 </div>
 
-<script type="text/javascript;version=1.7">
+<script type="text/javascript">
 $(function(){
-  let template = $("#template");
-  let entries = $("#entries");
+  var template = $("#template");
+  var entries = $("#entries");
 
-  let check_required = () => {
-    let ok = true;
+  var check_required = () => {
+    var ok = true;
     $("input.is-danger").removeClass("is-danger");
     $(".help.is-danger").addClass("hidden");
     _.each($("input:required"), item => {
@@ -180,9 +180,9 @@ $(function(){
     return ok;
   };
 
-  let check_gbp = () => {
-    let ok = true;
-    let pattern = /^\d+(\.\d\d)?$/;
+  var check_gbp = () => {
+    var ok = true;
+    var pattern = /^\d+(\.\d\d)?$/;
 
     _.each($("input.amount"), input => {
       console.debug(input)
@@ -195,10 +195,10 @@ $(function(){
     return ok;
   };
 
-  let check_for = () => {
-    let ok = true;
+  var check_for = () => {
+    var ok = true;
     _.each($(".item"), item => {
-      let for_ = $(".for", item);
+      var for_ = $(".for", item);
       if(!for_.val() && $(".paidby", item).val() === "other") {
         for_.addClass("is-danger");
         for_.next().removeClass("hidden");
@@ -208,7 +208,7 @@ $(function(){
     return ok;
   }
 
-  let add_entry = () => $(template.html()).appendTo(entries);
+  var add_entry = () => $(template.html()).appendTo(entries);
 
   get_values = box => ({
     type: $(".type", box).val(),
@@ -224,9 +224,9 @@ $(function(){
     },
   });
 
-  let new_item = e => {
-      let last = get_values($(".item").last());
-      let entry = add_entry();
+  var new_item = e => {
+      var last = get_values($(".item").last());
+      var entry = add_entry();
       $(".type", entry).val(last.type);
       $(".paidby", entry).val(last.paidby);
       $(".budget", entry).val(last.budget);
@@ -248,16 +248,16 @@ $(function(){
       $temp.remove();
   }
 
-  let show = () => {
+  var show = () => {
     if (!check_required() || !check_gbp() || !check_for()) {
       return;
     }
 
-    let items = _.map($(".item"), b => {
+    var items = _.map($(".item"), b => {
       return get_values(b);
     });
 
-    let data = {
+    var data = {
       description: $("#description").val(),
       items: items
     };
@@ -279,7 +279,7 @@ $(function(){
   $(".copy").click(e => copyToClipboard($("#modal-content")));
 
   $('.save').click(e => {
-    let data = { xml: $("#modal-content").text() };
+    var data = { xml: $("#modal-content").text() };
     $.ajax({
         type: "POST",
         url: "/save",
